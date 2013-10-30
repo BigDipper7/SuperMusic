@@ -1,6 +1,6 @@
 package com.example.voicedemo;
 
-public class AudioColluct implements VolumeGet{
+public class AudioCollect implements VolumeGet{
 
 	@Override
 	public void getVolume() {
