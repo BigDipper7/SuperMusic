@@ -3,9 +3,11 @@ package com.example.voicedemo;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,7 +43,7 @@ public class AudioActivity extends Activity {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				// TODO Auto-generated method stub
-			audioManager.setStreamMute(AudioManager.STREAM_MUSIC,!isChecked);	
+			audioManager.setStreamMute(AudioManager.STREAM_MUSIC,!isChecked);	//¿ØÖÆÊÇ·ñÎª¾²Òô
 			}
 		});
 	}
@@ -54,13 +56,21 @@ public class AudioActivity extends Activity {
 			Button btn=(Button)v;
 			switch(v.getId()){
 			case R.id.button1:
+			   {
+				Intent intent=new Intent(AudioActivity.this,MusicService.class);
+				intent.putExtra("volume", 0);
+				Log.i("ServiceActivity", "start");
+				startService(intent);
 				mediaPlayer=MediaPlayer.create(AudioActivity.this, R.raw.music);
 				mediaPlayer.setLooping(true);
 				mediaPlayer.start();
+				}
 				break;
 			case R.id.button2:
 				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+				
 				break;
+				
 			case R.id.button3:
 			    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
 			}
