@@ -64,6 +64,7 @@ public class MusicService extends Service {
 			{
 				case 0:
 				Log.i("AudioControl","here");
+				audioManager=(AudioManager)getSystemService(Service.AUDIO_SERVICE);
 				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
 				break;
 				case 1:
@@ -78,6 +79,8 @@ public class MusicService extends Service {
 	public class AudioControl extends Thread {
 	
 			public void run(){
+				       int i=1;
+				       while(i==1){
 						Log.i("AudioControl","get in the Loop");
 						try{
 							sleep(2000);
@@ -90,7 +93,7 @@ public class MusicService extends Service {
 						b.putInt("VL", 0);
 						msg.setData(b);
 						myHandler.sendMessage(msg);
-						
+				       }
 	            }
 		}
 	
