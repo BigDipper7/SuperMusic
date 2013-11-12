@@ -20,8 +20,8 @@ public class AudioActivity extends Activity {
 
 	protected static final Context AudioActivity = null;
 	private Button btnPlay=null;
-	private Button btnUpper=null;
-	private Button btnLower=null;
+	private Button btnStop=null;
+	private Button btnStopService=null;
 	private ToggleButton tbMute=null;
 	private MediaPlayer mediaPlayer=null;
 	private AudioManager audioManager=null;
@@ -32,12 +32,12 @@ public class AudioActivity extends Activity {
 		
 		audioManager=(AudioManager)getSystemService(Service.AUDIO_SERVICE);
 		btnPlay=(Button)findViewById(R.id.button1);
-		btnUpper=(Button) findViewById(R.id.button2);
-		btnLower=(Button) findViewById(R.id.button3);
+		btnStop=(Button) findViewById(R.id.button4);
+		btnStopService=(Button) findViewById(R.id.button5);
 		tbMute=(ToggleButton)findViewById(R.id.toggleButton1);
 		btnPlay.setOnClickListener(listener);
-		btnUpper.setOnClickListener(listener);
-		btnLower.setOnClickListener(listener);
+		btnStop.setOnClickListener(listener);
+		btnStopService.setOnClickListener(listener);
 		tbMute.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			
 			@Override
@@ -54,26 +54,26 @@ public class AudioActivity extends Activity {
 			// TODO Auto-generated method stub
 			@SuppressWarnings("unused")
 			Button btn=(Button)v;
+			Intent intent=new Intent(AudioActivity.this,MusicService.class);
 			switch(v.getId()){
-			case R.id.button1:
-			   {
-				Intent intent=new Intent(AudioActivity.this,MusicService.class);
-				intent.putExtra("volume", 0);
+			case R.id.button1:				
+				intent.putExtra("key", 0);
 				Log.i("ServiceActivity", "start");
 				startService(intent);
 				mediaPlayer=MediaPlayer.create(AudioActivity.this, R.raw.music);
 				mediaPlayer.setLooping(true);
 				mediaPlayer.start();
-				}
 				break;
-			case R.id.button2:
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
-				
+			case R.id.button5:			
+				Log.i("ServiceActivity", "stopSercice");
+			//	intent.putExtra("key", 1);
+				stopService(intent);
 				break;
-				
-			case R.id.button3:
-			    audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
-			}
+			case R.id.button4:	
+				Log.i("ServiceActivity", "stopMusic");
+				mediaPlayer.stop();
+				break;
+					}
 		}
 	};
 

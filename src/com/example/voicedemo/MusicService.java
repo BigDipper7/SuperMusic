@@ -30,24 +30,53 @@ import android.util.Log;
 
 public class MusicService extends Service {
 
-	private boolean isRecording=false;
+	//private boolean isRunning=false;
+//    private boolean isRecording=false;
 	private MediaPlayer mediaPlayer=null;
 	private AudioManager audioManager=null;
 	private MyHandler myHandler;
+	private AudioControl audioControl=new AudioControl();
+    private AudioCollect audioCollect=new AudioCollect();
+    private boolean stop=false;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		 Log.d("AudioStop2","stop");
+		    audioControl.stopRunning();
+		    audioCollect.stopRecord();
+	}
+	@Override
+	public boolean stopService(Intent name) {
+		// TODO Auto-generated method stub
+		Log.d("AudioStop","StopService");
+		return super.stopService(name);
+
+	}
+	@Override
+	public void onCreate() {
+		// TODO Auto-generated method stub
+		super.onCreate();
+		Log.i("Service", "start");
+		
+
+	}
 	@Override
 	public void onStart(Intent intent, int startId) {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
-		Log.i("Service", "start");
-		myHandler =new MyHandler();
-		new AudioControl().start();
-	    new AudioCollect().start();
+
+				myHandler =new MyHandler();
+				audioControl.start();
+				audioCollect.start();
+			   
 	}
 
 	class MyHandler extends Handler{
@@ -74,16 +103,17 @@ public class MusicService extends Service {
 				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);	
 				break;
 			}
-			stopSelf();
 		}
 	}
 	
 	
-	public class AudioControl extends Thread {
+	public  class AudioControl extends Thread {
 	
+			private   boolean isRunning;
+
 			public void run(){
-				       int i=1;
-				       while(i==1){
+				       isRunning=true;
+				       while(isRunning==true){
 						Log.i("AudioControl","get in the Loop");
 						try{
 							sleep(2000);
@@ -98,11 +128,16 @@ public class MusicService extends Service {
 						myHandler.sendMessage(msg);
 				       }
 	            }
+		  public void stopRunning(){
+			  isRunning=false;
+		  }
 		}
 	
    
       public class AudioCollect extends Thread{
-    	  @Override
+    	  private  boolean isRecording;
+
+		@Override
     	public void run() {
     		// TODO Auto-generated method stub
     		super.run();
@@ -133,7 +168,7 @@ public class MusicService extends Service {
     	          OutputStream os = new FileOutputStream(file);
     	          BufferedOutputStream bos = new BufferedOutputStream(os);
     	          DataOutputStream dos = new DataOutputStream(bos);
-    	          Log.i("AudioCollect","prepare1");
+    	         
     	          // Create a new AudioRecord object to record the audio.
     	          int bufferSize = AudioRecord.getMinBufferSize(frequency, channelConfiguration,audioEncoding);
     	          Log.i("AudioCollect","prepare2");
@@ -165,6 +200,9 @@ public class MusicService extends Service {
     	          Log.e("AudioRecord","Recording Failed");
     	        }
     	      }
+		public void stopRecord(){
+			isRecording=false;
+		}
     	}
        
 }

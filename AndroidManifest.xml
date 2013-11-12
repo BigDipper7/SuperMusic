@@ -26,6 +26,8 @@
         </activity>
         <service 
             android:name="com.example.voicedemo.MusicService">
+            <intent-filter android:priority = "0">
+            </intent-filter>
             </service>
     </application>
 
