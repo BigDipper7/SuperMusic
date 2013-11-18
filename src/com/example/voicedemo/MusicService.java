@@ -64,8 +64,11 @@ public class MusicService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		Log.i("Service", "start");
-		
+	//	Log.i("Service", "start");
+		myHandler =new MyHandler();
+//		audioControl.start();
+		audioCollect.start();
+
 
 	}
 	@Override
@@ -73,10 +76,7 @@ public class MusicService extends Service {
 		// TODO Auto-generated method stub
 		super.onStart(intent, startId);
 
-				myHandler =new MyHandler();
-				audioControl.start();
-				audioCollect.start();
-			   
+		   
 	}
 
 	class MyHandler extends Handler{
@@ -90,19 +90,70 @@ public class MusicService extends Service {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			Bundle b=msg.getData();
-			int volume=b.getInt("VL");
-			String s=String.valueOf(volume);
-			Log.i("AudioControl",s);
+			Double volume=b.getDouble("VL");
+		//	String s=String.valueOf(volume);
+		//	Log.i("AudioControl",s);
 			audioManager=(AudioManager)getSystemService(Service.AUDIO_SERVICE);
-			switch(volume){
-				case 0:
-				Log.i("AudioControl","here");	
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
-				break;
-				case 1:
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);	
-				break;
-			}
+			int current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+			Log.i("volume current",String.valueOf(current));	
+			if(volume<30){
+				while(current!=5){
+					
+					if(current<5) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+					if(current>5) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+					current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+				}
+			}else
+			if(volume<40){
+				while(current!=6){
+				
+					if(current<6) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+					if(current>6) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+					current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+				}
+			}else
+				if(volume<50){
+					while(current!=7){
+					
+						if(current<7) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+						if(current>7) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+						current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+					}
+				}else
+					if(volume<60){
+						while(current!=8){
+							
+							if(current<8) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+							if(current>8) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+							current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+						}
+					}else
+						if(volume<70){
+							while(current!=9){
+								
+								if(current<9) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+								if(current>9) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+								current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+							}
+						}else
+							if(volume<80){
+								while(current!=10){
+									
+									if(current<10) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+									if(current>10) audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);
+									current = audioManager.getStreamVolume( AudioManager.STREAM_MUSIC );
+								}
+							}
+				
+		//	switch(volume){
+		//		case 0:
+		//		Log.i("AudioControl","here");	
+		//		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_RAISE,AudioManager.FLAG_SHOW_UI);
+		//		break;
+		//		case 1:
+		//		audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC,AudioManager.ADJUST_LOWER,AudioManager.FLAG_SHOW_UI);	
+		//		break;
+		//	}
 		}
 	}
 	
@@ -144,7 +195,6 @@ public class MusicService extends Service {
     		
     		  Log.i("AudioCollect","start");
     		  
-  	        int v=0; 
     		 int frequency = 8000;
 
     	        int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
@@ -171,25 +221,32 @@ public class MusicService extends Service {
     	         
     	          // Create a new AudioRecord object to record the audio.
     	          int bufferSize = AudioRecord.getMinBufferSize(frequency, channelConfiguration,audioEncoding);
-    	          Log.i("AudioCollect","prepare2");
     	          AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
     	                                                    frequency, channelConfiguration,
     	                                                    audioEncoding, bufferSize);
     	          
     	          short[] buffer = new short[bufferSize];  
-    	          Log.i("AudioCollect","prepare3");
+    	       //   Log.i("AudioCollect","prepare3");
     	          audioRecord.startRecording();
     	   
     	          isRecording = true ;
     	          while (isRecording) {
-    	        	  Log.i("AudioCollect","prepare4");
+    	     //   	  Log.i("AudioCollect","prepare4");
+    	        	  long v=0;
     	            int bufferReadResult = audioRecord.read(buffer, 0, bufferSize);
     	            for (int i = 0; i < bufferReadResult; i++)
     	            {
     	              dos.writeShort(buffer[i]);
     	              v+=buffer[i]*buffer[i];
     	            }
-    	            Log.i("sp1",String.valueOf(v/(float)bufferReadResult));
+    	  //          Log.i("sp1",String.valueOf((v/(float)bufferReadResult)/1000)+"r="+String.valueOf(v));
+    	            double dB = 10*Math.log10(v/(double)bufferReadResult);
+    	            Log.i("DB",String.valueOf(dB));    //¼ÆËã·Ö±´
+    	            Message msg=new Message();
+					Bundle b=new Bundle();
+					b.putDouble("VL",dB);
+					msg.setData(b);
+    	            myHandler.sendMessage(msg);
     	          }
     	   
     	   

@@ -32,20 +32,10 @@ public class AudioActivity extends Activity {
 		
 		audioManager=(AudioManager)getSystemService(Service.AUDIO_SERVICE);
 		btnPlay=(Button)findViewById(R.id.button1);
-		btnStop=(Button) findViewById(R.id.button4);
 		btnStopService=(Button) findViewById(R.id.button5);
-		tbMute=(ToggleButton)findViewById(R.id.toggleButton1);
 		btnPlay.setOnClickListener(listener);
-		btnStop.setOnClickListener(listener);
 		btnStopService.setOnClickListener(listener);
-		tbMute.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// TODO Auto-generated method stub
-			audioManager.setStreamMute(AudioManager.STREAM_MUSIC,!isChecked);	//¿ØÖÆÊÇ·ñÎª¾²Òô
-			}
-		});
+
 	}
 	View.OnClickListener listener=new View.OnClickListener() {
 		
@@ -60,18 +50,11 @@ public class AudioActivity extends Activity {
 				intent.putExtra("key", 0);
 				Log.i("ServiceActivity", "start");
 				startService(intent);
-				mediaPlayer=MediaPlayer.create(AudioActivity.this, R.raw.music);
-				mediaPlayer.setLooping(true);
-				mediaPlayer.start();
 				break;
 			case R.id.button5:			
 				Log.i("ServiceActivity", "stopSercice");
 			//	intent.putExtra("key", 1);
 				stopService(intent);
-				break;
-			case R.id.button4:	
-				Log.i("ServiceActivity", "stopMusic");
-				mediaPlayer.stop();
 				break;
 					}
 		}
